@@ -24,8 +24,8 @@ date: 2018-12-17 05:02:56
 我这里首先装了bazel，我是安装在自己的家目录中的。具体的  
 > sudo apt-get install pkg-config zip g++ zlib1g-dev unzip python  
 > 从 https://github.com/bazelbuild/bazel/releases 中下载适合系统的\*install\*.sh  
-> chmod +x bazel-\<version\>-installer-linux-x86_64.sh  
-> ./bazel-\<version\>-installer-linux-x86_64.sh --user #安装bazel  
+> chmod +x bazel-<version>-installer-linux-x86_64.sh  
+> ./bazel-<version>-installer-linux-x86_64.sh --user #安装bazel  
 > export PATH="\$PATH:\$HOME/bin"
 
 这个类似于cmake，是一个编译工具，在linux和mac中是使用bazle，在windows中使用cmake
