@@ -19,7 +19,7 @@ after_script:
 
 branches:
   only:
-    - hexo  #只监测master之外新增的source分支
+    - hexo  #只监测master之外新增的hexo分支
 env:
  global:
    - GH_REF: github.com/menghuu/menghuu.github.io.git  #设置GH_REF
