@@ -1,0 +1,30 @@
+language: node_js
+node_js: stable
+before_install:
+  - export TZ='Asia/Shanghai'
+install:
+  - npm install
+script:
+  - hexo cl
+  - hexo g
+after_script:
+  - cd ./public
+  - git init
+  - git config user.name "menghuu"  #用户名
+  - git config user.email "humeng@live.com"  #邮箱
+  - git add .
+  - git commit -m "Site deployed by Travis CI"  #提交Commit时的说明
+  - git push --force --quiet "https://${GH_TOKEN}@${GH_REF}" master:master  #GH_TOKEN是在Travis中配置Token的名称
+# 结束构建
+
+branches:
+  only:
+    - hexo  #只监测master之外新增的source分支
+env:
+ global:
+   - GH_REF: github.com/menghuu/menghuu.github.io.git  #设置GH_REF
+
+cache:
+  directories:  #缓存特定目录, 加快构建速度
+    - node_modules
+
