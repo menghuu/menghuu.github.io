@@ -16,15 +16,17 @@ date: 2018-12-17 05:02:56
 
 <!--more-->
 
-----
+---
 
 参考资料  
+
 > tensorflow的官方从源码编译tensorflow的步骤流程 https://www.tensorflow.org/install/source  
 > 安装balze的官方资料： https://docs.bazel.build/versions/master/install-ubuntu.html  
 
-----
+---
 
 我这里首先装了bazel，我是安装在自己的家目录中的。具体的  
+
 > sudo apt-get install pkg-config zip g++ zlib1g-dev unzip python  
 > 从 https://github.com/bazelbuild/bazel/releases 中下载适合系统的\*install\*.sh  
 > chmod +x bazel-<version\>-installer-linux-x86_64.sh  
@@ -33,13 +35,14 @@ date: 2018-12-17 05:02:56
 
 这个类似于cmake，tensorflow在linux和mac中是使用bazle进行构建，在windows中使用cmake
 
-----
+---
 
 根据tensorflow官方的资料，还需要安装如下的包  
 
 `sudo apt-get install python3-numpy python3-dev python3-pip python3-wheel`
 
 这些包的作用是
+
 > numpy：这是 TensorFlow 需要的数值处理软件包。  
 > dev：用于向 Python 添加扩展程序。  
 > pip：用于安装和管理某些 Python 软件包。  
@@ -49,7 +52,8 @@ date: 2018-12-17 05:02:56
 
 从描述上来看，这些包的作用主要是为了增加tensorflow的python api的扩展能力，没有他们(除了numpy之外)似乎对于tensorflow的cpp lib没有什么影响。
 
-----
+---
+
 根据官方的给的教程，我使用`git clone https://github.com/tensorflow/tensorflow`下载了源码，并使用`git checkout r1.13`来选择r1.13的tensorflow的版本,你可以根据自己的需要选择相应的版本。
 
 如果采用的是r1.0,然后根据按照官方教程中`./configure`来配置，出现[这个问题](https://github.com/tensorflow/tensorflow/issues/16654)，好像是因为判断bazel的版本号时候出现了bug，需要打上两个补丁。好像只要是r1.5以前的都有这个问题，我本来使用的是r1.0，结果打上这两个补丁也不能用。所以最终还是使用了1.13的版本。r1.13版本不需要打这两个补丁。
@@ -59,7 +63,7 @@ date: 2018-12-17 05:02:56
 
 实际上，这个r1.13依旧不能很好的编译成功，主要是因为我是在python3.7中编译的，在python3.7中async以及await成了关键词，但是代码中还是没有修改好。或许这个[commit](https://github.com/tensorflow/tensorflow/pull/21202/files)可以解决?（忘记了能不能行）
 
-----
+---
 
 然后就是`./configure`了,我这里没有指定cuda，如果有需要，请一定要选择。
 
@@ -73,8 +77,10 @@ date: 2018-12-17 05:02:56
 
 一段非常非常长的等待，抱歉，**最终使用python3.7+tensorflow-r1.13还是没有成功。**
 
-----
+---
+
 最后使用的是py35 + keras_preprocessing成功编译成功tensorflow-r1.13。具体的步骤
+
 ```bash
 conda create -n py35 python=3.5 pip numpy wheel  
 conda activate py35  

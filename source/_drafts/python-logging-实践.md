@@ -1,6 +1,9 @@
 ---
 title: python_logging_实践
-tags: python, logging, 日志
+tags: 
+    - python
+    - logging
+    - 日志
 ---
 
 # python logging 实践
@@ -15,6 +18,3 @@ tags: python, logging, 日志
 > Formatter 格式化器，指明了最终输出中日志记录的布局。
 
 Handler 是属于Logger的(使用`logger.addHandler`)，Filter可以属于Logger(`addFilter`)，也可以属于Handler(`addFilter`)，实际上，logger会先使用Filter先filter一遍，然后使用Handler再处理一遍(里面自带了filter)，Formatter设置在Handler中的(`setFormatter`)。所以Formatter对于每个handler中只有一个。
-
-
-

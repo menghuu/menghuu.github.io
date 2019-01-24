@@ -10,7 +10,6 @@ tags:
 date: 2018-12-31 01:24:40
 ---
 
-
 # manacher 算法
 
 Manacher算法是一个用来寻找字符串最长回文子串的算法，它能够在线性时间内解决这个问题。
@@ -39,10 +38,10 @@ Manacher算法是一个用来寻找字符串最长回文子串的算法，它能
 
 1. 如果i根本不在pR-1这个范围内，那么这个时候，只能一点点算pArr[i]  
 2. 如果在这个范围内  
-    - 如果以index为中心，i的对称点为中心的最长回文子串范围不超过了以index为中心的范围，则pArr[i] = pArr[i']  
-    - 如果以index为中心，i的对称点为中心的最长回文子串范围超过了以index为中心的范围，则这个时候，pArr[i] = pR - i   
-    - 如果正好左边界重合了， 需要判断右大之后的是不是也是以i为中心点的回文字符串的一部分，这部分就得手动了。  
-    
+   - 如果以index为中心，i的对称点为中心的最长回文子串范围不超过了以index为中心的范围，则pArr[i] = pArr[i']  
+   - 如果以index为中心，i的对称点为中心的最长回文子串范围超过了以index为中心的范围，则这个时候，pArr[i] = pR - i   
+   - 如果正好左边界重合了， 需要判断右大之后的是不是也是以i为中心点的回文字符串的一部分，这部分就得手动了。  
+
 ## 代码实现
 
 [this](https://github.com/menghuu/leetcode2/blob/master/src/String/m5_Longest_Palindromic_Substring.py)

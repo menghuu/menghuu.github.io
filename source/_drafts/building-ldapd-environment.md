@@ -1,6 +1,11 @@
 ---
 title: building_ldapd_environment
-tags: linux; docker; openldap; apacheds; phpldapadmin
+tags: 
+    - linux 
+    - docker
+    - openldap
+    - apacheds
+    - phpldapadmin
 ---
 
 # 搭建 ldapd 认证环境
@@ -13,10 +18,9 @@ tags: linux; docker; openldap; apacheds; phpldapadmin
 
 ## docker 是什么?
 
->Docker 是一个开源的应用容器引擎，让开发者可以打包他们的应用以及依赖包到一个可移植的容器中，然后发布到任何流行的 Linux 机器上，也可以实现虚拟化。
+> Docker 是一个开源的应用容器引擎，让开发者可以打包他们的应用以及依赖包到一个可移植的容器中，然后发布到任何流行的 Linux 机器上，也可以实现虚拟化。
 
 简单来说，就是将依赖环境打包起来的一个工具。docker的一个特点就是，默认一个docker镜像启动之后，如果关闭则所有数据都消失了，但是创建/启动起来异常的快，比虚拟机快得多了。具体的一些原理这里不多说了
-
 
 ## docker-compose 是什么
 
@@ -27,7 +31,6 @@ tags: linux; docker; openldap; apacheds; phpldapadmin
 ### 安装docker
 
 略，大概就是`sudo apt install docker.io`，如果你不想用root权限执行docker命令，那么可以将自己的用户加到docker这组中。
-
 
 ### 安装docker-compose
 
@@ -52,8 +55,6 @@ mkdir -p $HOME/projs/lab_docker_compose/ldap_persistence/backup # 用来备份
 ```
 
 **无论你看到什么别的教程，能不修改slapd.conf就不修改这个文件，这种配置方案已经不再被鼓励**
-
-
 
 ```yml
 version: '3'
@@ -102,27 +103,12 @@ services:
       - PHPLDAPADMIN_HTTPS=false
     ports:
       - '8000:80'  # 会在服务器上启动8000端口监听
-
 ```
-
 
 顺便说下，389是openldap那个不加密的默认端口，所以只要在apacheds的连接上把apacheds的默认端口换成这个即可连接。默认的登录账户是 `cn=admin,dc=youdomain,dc=org`，默认密码是`admine`以及`config`。
 
 就为了这个破docker-compose.yml 我弄了好长时间，还不知道那个加密的配置对不对，估计不太对。
 
 ## 管理，修改账户
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 [^using_apached_directory_studio_with_openldapd]: https://www.linux.com/learn/intro-to-linux/2017/2/how-install-apache-directory-studio-and-connect-openldap-server 
