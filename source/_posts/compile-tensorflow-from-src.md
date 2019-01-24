@@ -1,6 +1,9 @@
 ---
 title: 从源码编译tensorflow
-tags: linux tensorflow compile
+tags: 
+    - linux
+    - tensorflow
+    - compile
 date: 2018-12-17 05:02:56
 ---
 

@@ -1,6 +1,6 @@
 ---
 title: python_logging_实践
-tags: python logging 日志
+tags: python, logging, 日志
 ---
 
 # python logging 实践
