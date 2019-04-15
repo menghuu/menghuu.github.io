@@ -1,5 +1,6 @@
 ---
 title: N个球放入M个盒子中的情况分析
+date: 2019-04-15 14:36:58
 tags: 
     - 算法
     - Algorithm
