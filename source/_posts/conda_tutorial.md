@@ -1,10 +1,12 @@
 ---
-title: conda/anaconda安利+速记手册
+title: conda/anaconda安利+速记手册 或者 使用 pipenv+pyenv
 date: 2019-04-11 14:36:58
 tags: 
     - docker
     - python
     - anaconda
+    - pipenv
+    - pyenv
 ---
 
 
@@ -21,6 +23,8 @@ tags:
 问：为什么使用`conda`？ 
 
 答：除了能像`pip`一样安装包之外，还具备虚拟环境的功能。如果你不使用`anaconda`或者`minconda`环境，除非自己安装`conda`，在python中，只能通过`pyenv`或者`pipenv`或者`virtualenv`之类的工具创建虚拟环境。对于安装包，我还想说，`conda`不仅仅能安装python的包，也能安装r的包(它自我标榜是一个系统级的包管理工具，但是谁会用conda管理系统级的软件？)，一般情况下，如果使用pip有依赖问题，使用`conda`都可以轻松解决。很多的工具也都全力支持anaconda环境，对pip的支持不够好，比如`spyder`，顺便安利下`spyder`，我个人觉着`spyder`/`vscode`/`pycharm`/`jupyter notebook`是不同的东西，但都是好工具。
+
+**更新** 现在其实python官方已经有了对应与conda的工具`pipenv`+`pyenv`,甚至更好用,因为 conda 貌似不支持早期的 python3,而且 conda 也不支持`Pipfile.lock` 之类的东西. 总之,现在不应该使用 pip 这个工具了, 如果你不喜欢 conda,那么用`pipenv+pyenv`吧,顺便说下,pyenv 是能安装 anaconda 环境的, 但是不建议任何时候这么干,甚至安装了 pyenv 之后就把他忘记了吧,直接用 pipenv,pipenv 这个工具会根据当前的系统 python 版本创建新的环境,但是如果此时你所需的 python 版本不在系统中,会自动调用 pyenv 来安装所需要的 python 版本,十分方便. 现在 conda 唯一的优势就是有很多的预编译包+pypi 这个仓库实在是太大太乱了,没有审批机制是正确而混乱的.conda 好歹还有个 channel 来规范一下.
 
 --------
 
