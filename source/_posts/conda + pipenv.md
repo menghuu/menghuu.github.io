@@ -1,20 +1,12 @@
-# conda + pipenv
-
 ---
 title: conda + pipenv 配置深度学习开发环境
-
-author: mongoose
-
-date: 2019-07-29
-
 tags: 
-
-- conda
-- pipenv
-- python
-- 虚拟环境
-
-----
+    - conda
+    - pipenv
+    - python
+    - 虚拟环境
+date: 2019-07-29 00:00:00
+---
 
 - 前提: 安装的 cuda 和 cudnn 版本和驱动是匹配的, 不匹配的话, 绝对不可能解决, 涉及到 linux kernel 处的驱动问题, 这不是普通权限用户能解决的
 - `conda create -n cuda8_cudnn5 cudatoolkit==8.0.0 cudnn==5.1.0`
