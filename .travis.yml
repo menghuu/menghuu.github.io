@@ -2,9 +2,10 @@ language: node_js
 node_js: stable
 before_install:
   - export TZ='Asia/Shanghai'
+  - rm node_modules -fr
 install:
   - npm install
-  - python3 -m pip install pandoc
+  - python -m pip install pandoc
 script:
   - hexo cl
   - hexo g
