@@ -2,17 +2,17 @@
 title: N个球放入M个盒子中的情况分析
 date: 2019-04-15 14:36:58
 tags: 
-    - 算法
-    - Algorithm
+  - 算法
+  - 数据结构
 ---
 
 对于情况分析，主要参考：
 
-<!--more-->
-
 - [参考1](https://blog.csdn.net/u011244839/article/details/53443505)
 - [参考2](https://blog.csdn.net/Jaster_wisdom/article/details/78506831)
 - [排列组合](https://blog.csdn.net/l_0000/article/details/82560166)
+
+<!--more-->
 
 本文只是对参考链接的简单“复制”，最多会有比较详细的解释，不会有什么新的东西
 
