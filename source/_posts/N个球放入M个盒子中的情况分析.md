@@ -8,12 +8,14 @@ tags:
 
 对于情况分析，主要参考：
 
+<!--more-->
+
 - [参考1](https://blog.csdn.net/u011244839/article/details/53443505)
 - [参考2](https://blog.csdn.net/Jaster_wisdom/article/details/78506831)
 - [排列组合](https://blog.csdn.net/l_0000/article/details/82560166)
 
 本文只是对参考链接的简单“复制”，最多会有比较详细的解释，不会有什么新的东西
-<!--more-->
+
 
 >  该类问题涉及到三个因素，分别是球是否有区别、盒子是否有区别、盒子是否可以为空。所以大概可以将该问题分为以下八种情况：
 
