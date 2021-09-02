@@ -22,7 +22,7 @@ jobs:
     - name: setup Node.js
       uses: actions/setup-node@v2
       with:
-        node-version: ${NODE_VERSION}
+        node-version: "${{ env.NODE_VERSION }}"
         cache: 'npm'
     - run: npm install
     - run: hexo cl
@@ -33,6 +33,6 @@ jobs:
     - run: git config user.email "mail@meng.hu"
     - run: git add .
     - run: git commit -m "Site deployed by Github Action"
-    - run: echo "${GH_REF}"
-    #- run: git push --force --quiet "https://${ACTION_GH_TOKEN}@${GH_REF}" master:master
+    - run: echo "${{ GH_REF }}"
+    #- run: git push --force --quiet "https://${{ ACTION_GH_TOKEN }}@${{ GH_REF }}" master:master
     
