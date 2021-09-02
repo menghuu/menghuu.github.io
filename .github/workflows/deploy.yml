@@ -33,6 +33,6 @@ jobs:
     - run: git config user.email "mail@meng.hu"
     - run: git add .
     - run: git commit -m "Site deployed by Github Action"
-    - run: echo "${{ GH_REF }}"
-    #- run: git push --force --quiet "https://${{ ACTION_GH_TOKEN }}@${{ GH_REF }}" master:master
+    - run: echo "${{ env.GH_REF }}"
+    #- run: git push --force --quiet "https://${{ env.ACTION_GH_TOKEN }}@${{ env.GH_REF }}" master:master
     
