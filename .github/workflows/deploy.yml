@@ -28,12 +28,11 @@ jobs:
       run: |
         npm install -g hexo
         npm install
-    - run: npm list # test
     - name: generate static pages
       run: |
         hexo cl
         hexo g
-    - name: git commit
+    - name: git commit page
       run: |
         cd ./public
         git init
@@ -41,6 +40,7 @@ jobs:
         git config user.email "mail@meng.hu"
         git add .
         git commit -m "Site deployed by Github Action"
-    - run: echo "${{ env.GH_REF }}"
+        git push --force --quiet "https://${{ env.ACTION_GH_TOKEN }}@${{ env.GH_REF }}" master:master
+    #- run: echo "${{ env.GH_REF }}"
     #- run: git push --force --quiet "https://${{ env.ACTION_GH_TOKEN }}@${{ env.GH_REF }}" master:master
     
