@@ -25,6 +25,7 @@ jobs:
         node-version: "${{ env.NODE_VERSION }}"
         cache: 'npm'
     - run: npm install
+    - run: npm list # test
     - run: hexo cl
     - run: hexo g
     - run: cd ./public
