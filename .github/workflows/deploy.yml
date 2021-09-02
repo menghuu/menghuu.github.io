@@ -42,7 +42,6 @@ jobs:
         git commit -m "Site deployed by Github Action"
         echo "gh ref is: ${{ env.GH_REF }}"
         echo "ACTION_GH_TOKEN_FAKE is ${{ env.ACTION_GH_TOKEN_FAKE }}"
-        echo "ACTION_GH_TOKEN_FAKE secret is ${{ secret.ACTION_GH_TOKEN_FAKE }}"
         git push --force --quiet "https://${{ env.ACTION_GH_TOKEN }}@${{ env.GH_REF }}" master:master
     #- run: echo "${{ env.GH_REF }}"
     #- run: git push --force --quiet "https://${{ env.ACTION_GH_TOKEN }}@${{ env.GH_REF }}" master:master
