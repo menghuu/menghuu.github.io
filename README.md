@@ -1,6 +1,6 @@
 # mongoose's blog
 
-[![Build Status](https://www.travis-ci.org/menghuu/menghuu.github.io.svg?branch=hexo)](https://www.travis-ci.org/menghuu/menghuu.github.io)
+[![Node.js CI](https://github.com/menghuu/menghuu.github.io/actions/workflows/deploy.yml/badge.svg)](https://github.com/menghuu/menghuu.github.io/actions/workflows/deploy.yml)
 
 ## branches  
 1. hexo: blog sources

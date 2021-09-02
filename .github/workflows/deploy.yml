@@ -1,0 +1,54 @@
+# This workflow will do a clean install of node dependencies, cache/restore them, build the source code and run tests across different versions of node
+# For more information see: https://help.github.com/actions/language-and-framework-guides/using-nodejs-with-github-actions
+
+name: Deploy CI
+
+on:
+  push:
+    branches: [ hexo ]
+  pull_request:
+    branches: [ hexo ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+    env:
+      TZ: 'Asia/Shanghai'
+      GH_REF: github.com/menghuu/menghuu.github.io.git  #设置GH_REF
+      NODE_VERSION: 14
+    steps:
+    - uses: actions/checkout@v2
+    - name: setup Node.js
+      uses: actions/setup-node@v2
+      with:
+        cache: 'npm'
+        
+    - name: Cache node modules
+      uses: actions/cache@v2
+      with:
+        path: ./node_modules
+        key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
+        restore-keys: |
+          ${{ runner.os }}-build-${{ env.cache-name }}-
+          ${{ runner.os }}-build-
+          ${{ runner.os }}-
+          
+    - name: install packages
+      run: |
+        npm install -g hexo
+        npm install
+    - name: generate static pages
+      run: |
+        hexo cl
+        hexo g
+    - name: git commit page
+      run: |
+        cd ./public
+        git init
+        git config user.name "meng.hu"
+        git config user.email "mail@meng.hu"
+        git add .
+        git commit -m "Site deployed by Github Action"
+        git push --force --quiet "https://menghuu:${{ secrets.GITHUB_TOKEN  }}@${{ env.GH_REF }}" master:master
+    
