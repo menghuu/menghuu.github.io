@@ -40,5 +40,5 @@ jobs:
         git config user.email "mail@meng.hu"
         git add .
         git commit -m "Site deployed by Github Action"
-        git push --force --quiet "https://menghuu:${{ secrets.ACTION_GH_TOKEN }}@${{ env.GH_REF }}" master:master
+        git push --force --quiet "https://menghuu:${{ secrets.GITHUB_TOKEN  }}@${{ env.GH_REF }}" master:master
     
