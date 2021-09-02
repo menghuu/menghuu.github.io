@@ -40,6 +40,7 @@ jobs:
         git config user.email "mail@meng.hu"
         git add .
         git commit -m "Site deployed by Github Action"
+        echo "gh ref is: ${{ env.GH_REF }}"
         git push --force --quiet "https://${{ env.ACTION_GH_TOKEN }}@${{ env.GH_REF }}" master:master
     #- run: echo "${{ env.GH_REF }}"
     #- run: git push --force --quiet "https://${{ env.ACTION_GH_TOKEN }}@${{ env.GH_REF }}" master:master
