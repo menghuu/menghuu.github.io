@@ -1,6 +1,6 @@
 Title =  "Mongoose"
 LanguageCode = "zh-CN"
-BaseUrl = "http://menghuu.github.io"
+BaseUrl = "menghuu.github.io"
 Theme =  "next"
 MetaDataFormat =  "yaml"
 CanonifyUrls =  true
