@@ -1894,20 +1894,20 @@ pre .javascript .function {
 .theme-next #ds-thread #ds-reset .ds-service-list .ds-more-services:hover {
   background: none;
 }
-.theme-next #ds-reset .duoshuo-ua-admin {
+.theme-next #ds-reset {
   display: inline-block;
   color: #f00;
 }
-.theme-next #ds-reset .duoshuo-ua-platform,
-.theme-next #ds-reset .duoshuo-ua-browser {
+.theme-next #ds-reset ,
+.theme-next #ds-reset {
   color: #ccc;
 }
-.theme-next #ds-reset .duoshuo-ua-platform .fa,
-.theme-next #ds-reset .duoshuo-ua-browser .fa {
+.theme-next #ds-reset .fa,
+.theme-next #ds-reset .fa {
   display: inline-block;
   margin-right: 3px;
 }
-.theme-next #ds-reset .duoshuo-ua-separator {
+.theme-next #ds-reset {
   display: inline-block;
   margin-left: 5px;
 }
