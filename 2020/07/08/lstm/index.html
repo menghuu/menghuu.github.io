@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"yoursite.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="循环神经网络(RNN)是处理文本任务的一个很好的模型结构，LSTM是在缓解RNN梯度消失和梯度爆炸问题的一个改进版，那么具体来说有那么几个问题  什么是RNN 为甚么RNN有梯度消失和梯度爆炸问题 如何解决RNN的梯度消失和梯度爆炸问题 什么是LSTM LSTM为什么能够一定程度上缓解梯度消失和爆炸问题 RNN中的Dropout，用于处理过拟合">
+<meta property="og:type" content="article">
+<meta property="og:title" content="lstm知识点">
+<meta property="og:url" content="http://yoursite.com/2020/07/08/lstm/index.html">
+<meta property="og:site_name" content="Mongoose&#39;s blog">
+<meta property="og:description" content="循环神经网络(RNN)是处理文本任务的一个很好的模型结构，LSTM是在缓解RNN梯度消失和梯度爆炸问题的一个改进版，那么具体来说有那么几个问题  什么是RNN 为甚么RNN有梯度消失和梯度爆炸问题 如何解决RNN的梯度消失和梯度爆炸问题 什么是LSTM LSTM为什么能够一定程度上缓解梯度消失和爆炸问题 RNN中的Dropout，用于处理过拟合">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://yoursite.com/2020/07/08/lstm/lstm-%E7%BB%93%E6%9E%84.png">
+<meta property="article:published_time" content="2020-07-07T16:00:00.000Z">
+<meta property="article:modified_time" content="2020-07-07T16:00:00.000Z">
+<meta property="article:author" content="Mongooses">
+<meta property="article:tag" content="NLP">
+<meta property="article:tag" content="LSTM">
+<meta property="article:tag" content="RNN">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://yoursite.com/2020/07/08/lstm/lstm-%E7%BB%93%E6%9E%84.png">
+
+<link rel="canonical" href="http://yoursite.com/2020/07/08/lstm/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>lstm知识点 | Mongoose's blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Mongoose's blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/07/08/lstm/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Mongooses">
+      <meta itemprop="description" content="recording something">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Mongoose's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          lstm知识点
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-07-08 00:00:00" itemprop="dateCreated datePublished" datetime="2020-07-08T00:00:00+08:00">2020-07-08</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>循环神经网络(RNN)是处理文本任务的一个很好的模型结构，LSTM是在缓解RNN梯度消失和梯度爆炸问题的一个改进版，那么具体来说有那么几个问题</p>
+<ol>
+<li>什么是RNN</li>
+<li>为甚么RNN有梯度消失和梯度爆炸问题</li>
+<li>如何解决RNN的梯度消失和梯度爆炸问题</li>
+<li>什么是LSTM</li>
+<li>LSTM为什么能够一定程度上缓解梯度消失和爆炸问题</li>
+<li>RNN中的Dropout，用于处理过拟合</li>
+</ol>
+<span id="more"></span>
+<h2 id="什么是RNN"><a href="#什么是RNN" class="headerlink" title="什么是RNN"></a>什么是RNN</h2><script type="math/tex; mode=display">
+net_t = Ux_t + Wh_{t-1}</script><script type="math/tex; mode=display">
+h_t = f(net_{t-1})</script><script type="math/tex; mode=display">
+y = g(Vh_t)</script><p>这就是RNN的所有公式，其中的$f(.)$和$g(.)$ 是指某种激活函数</p>
+<h2 id="为什么RNN有梯度消失和梯度爆炸的问题"><a href="#为什么RNN有梯度消失和梯度爆炸的问题" class="headerlink" title="为什么RNN有梯度消失和梯度爆炸的问题"></a>为什么RNN有梯度消失和梯度爆炸的问题</h2><p>如果从一个比较严谨的角度上，应该像百面机器学习那本书中的推导一样，但是这里只给出一个直观的解释。</p>
+<p>当假设$f(.)$和$g(.)$都不存在，那么</p>
+<script type="math/tex; mode=display">
+\frac{\partial net_t}{\partial net_1} = \frac{\partial net_t}{\partial net_{t-1}}\dot{\frac{\partial net_{t-1}}{\partial net_{t-2}}} = W \dot{\frac{\partial net_{t-1}}{\partial net_{t-2}}} = W^n</script><p>其中n是这个文本的长度。</p>
+<p>也就是说对于$W$的初始值的选择有比较大的影响。</p>
+<p>因为当我们在使用CNN的时候，实际上，初始化这个权重的时候是按照某种分布来做的，每个$W$都是不同的，但是在RNN中，是通过BPTT(Back Propagation Through Time, 基于时间的反向传播)算法实现的，其结构决定了不同位置的$W$都是相同的。所以会出现这个问题</p>
+<p>对于梯度爆炸的问题，其实不是很难解决，最简单的就是通过梯度裁剪来做，当求解梯度的时候，发现梯度大于某个数值的时候，强制钳制到某个大小。</p>
+<p>但是梯度消失的问题，就没有那么简单了，可以通过深度残差网络来解决？这种解决方式就有点类似于LSTM，可能直接就通过GRU或者LSTM来解决梯度消失的问题了。</p>
+<p>其实这里的举例也验证了，如果使用Relu激活函数，并且将$W$初始化成单位矩阵，能一定程度上缓解梯度消失和爆炸的问题。(这就是另一个问题了)</p>
+<h2 id="如何解决RNN的梯度消失问题-一部分"><a href="#如何解决RNN的梯度消失问题-一部分" class="headerlink" title="如何解决RNN的梯度消失问题(一部分)"></a>如何解决RNN的梯度消失问题(一部分)</h2><blockquote>
+<p>对于梯度爆炸的问题，其实不是很难解决，最简单的就是通过梯度裁剪来做，当求解梯度的时候，发现梯度大于某个数值的时候，强制钳制到某个大小。</p>
+<p>但是梯度消失的问题，就没有那么简单了，可以通过深度残差网络来解决？这种解决方式就有点类似于LSTM，可能直接就通过GRU或者LSTM来解决梯度消失的问题了。</p>
+</blockquote>
+<h2 id="什么是LSTM"><a href="#什么是LSTM" class="headerlink" title="什么是LSTM"></a>什么是LSTM</h2><p>建议参考更加全面的介绍<a target="_blank" rel="noopener" href="https://www.jianshu.com/p/95d5c461924c">博文</a>， 这里制作非常简略的记录</p>
+<img src="/2020/07/08/lstm/lstm-%E7%BB%93%E6%9E%84.png" class="" title="lstm结构">
+<p>这里面有几个值得介绍的门结构</p>
+<ol>
+<li><p>输入门$i_t$</p>
+<script type="math/tex; mode=display">
+i_t = \sigma(W_t x_t + U_t h_{t-1} + b_i)</script></li>
+<li><p>遗忘门$f_t$</p>
+<script type="math/tex; mode=display">
+f_t = \sigma(W_fx_t + U_f h_{t-1} + b_f)</script></li>
+<li><p>输出门$o_t$</p>
+<script type="math/tex; mode=display">
+o_t = \sigma(W_o x_t +U_o h_{t-1} + b_o)</script></li>
+<li><p>内部记忆单元$c_t$ </p>
+<script type="math/tex; mode=display">
+\hat{c_t}=\tanh(W_c x_t + U_c h_{t-1})</script><script type="math/tex; mode=display">
+c_t = f_t \odot c_{t-1} + i_t \odot{\hat{c_t}}</script><p>那么之前RNN中的$h_t$应该表述成</p>
+<script type="math/tex; mode=display">
+h_t = o_t \odot {\tanh(c_t)}</script></li>
+</ol>
+<p>这些公式看上去有些复杂，但是除了记忆单元之外，其他的都还是挺直观的。其中$\sigma$的值域在0到1之间，他们最终其实只用于内部记忆单元的计算中。</p>
+<p>并且这三个门的名字，输入门的意思是对当前输入的记忆的限制，所谓的遗忘门是指对上一个时刻的记忆的遗忘，这两个共同组合成为当前时刻的记忆。至于输出门，是对当前记忆的输出的一个限制。</p>
+<p>其实这也能看出来，所有的限制都是0到1之间，其他的$\tanh$这些激活函数都是用来生成记忆的。</p>
+<p>一般情况下，对于限制，或者说 输入门，遗忘门，输出门，一般采用sigmoid。$\tanh$的值域是-1到1，一方面是因为这个函数是以0为中心的，并且在输入时0的情况下的比sigmoid有更大的梯度。另外一方面，这也是现代的LSTM模型实践下的结果(使用$\tanh$效果更好)</p>
+<p>有些时候，在资源比价有限的情况下，门限也可以采用类似阈值硬切0和1.</p>
+<p>LSTM的实际应用结构有很多变种，其实也没有必要完全记下来。</p>
+<h2 id="为什么LSTM能够解决梯度消失和爆炸的问题-准确来说是减缓"><a href="#为什么LSTM能够解决梯度消失和爆炸的问题-准确来说是减缓" class="headerlink" title="为什么LSTM能够解决梯度消失和爆炸的问题(准确来说是减缓)"></a>为什么LSTM能够解决梯度消失和爆炸的问题(准确来说是减缓)</h2><p>参考<a target="_blank" rel="noopener" href="https://www.zhihu.com/question/34878706">在此</a></p>
+<p>大概是说，LSTM在结构上，通过遗忘门 输入门的限制，使得，最终的隐状态的信息传输路径有多条，它事实上减缓了梯度消失的问题。或许我们不应该将这个问题看的这么严重，<del>或者说(个人理解)LSTM是在逻辑上讲了一个好故事，符合人类的思维，如果只使用RNN那种原始结构，它不符合实际，所以它会出现梯度消失的问题，梯度消失的问题可能只是结果(不符合人类思维的结果)，而不是因为梯度消失导致结果不好, 或者说效果不好和梯度消失都是结构不合理的结果。(个人乱说的，仅供参考)</del></p>
+<p>在百面深度学习这本书中，也讲到了这个梯度消失和爆炸的问题。但是是从信息传播的角度，也就是长期信息记忆的角度来看的，这个似乎能够更直观的通过模型结构而不是单纯的去理解梯度消失梯度爆炸这个角度来看。</p>
+<h2 id="Dropout抑制过拟合"><a href="#Dropout抑制过拟合" class="headerlink" title="Dropout抑制过拟合"></a>Dropout抑制过拟合</h2><p>参考自百面深度学习这本书</p>
+<p>随即丢弃这个方法本身经常应用在常见的卷积神经网络中，不是特别常出现在循环神经网络中，这也是有一定的道理的，后面说。这里先说一下为什么dropout是有效的。</p>
+<p>事实上，dropout是一种正则化的方法，来缓解过拟合问题。</p>
+<ol>
+<li>看作是集成了大量的神经网络之后进行了bagging操作。在训练的时候，随机使用部分的神经元进行训练，但是预测的时候，则综合了所有的神经元的结果。在原始的bagging中，所有的模型是独立的，但是对于神经网络中的dropout，则是共享了所有的参数。</li>
+<li>dropout减少了神经元之间的共适应关系。由于训练中会随机丢弃神经元，这也就意味着，在训练的时候，某个神经元不太会在一某个特定神经元的输出，不会依赖于隐节点之间的固定关系</li>
+</ol>
+<p>那么如何在循环神经网络中使用dropout策略？这里有两个概念</p>
+<ol>
+<li>前馈连接：从t时刻的输入到t时刻输出直接的连接</li>
+<li>循环连接：从t时刻到t+1时刻之间的连接</li>
+</ol>
+<p>现在已经从实验结果中证明了采用基于变分推理的Dropout方法，即对一个序列，在其所有时刻的循环连接上采用相同的丢弃方式，也就是说在不同时刻丢去的连接时相同的，在这种情况下在语言模型和情感分析中效果比较好。</p>
+<p>但是我个人觉着，dropout在RNN(包括LSTM、GRU)中用处不是很大，再说现在RNN在文本应用中也不太常见了，BERT那一套东西实在是太成熟了。</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/NLP/" rel="tag"># NLP</a>
+              <a href="/tags/LSTM/" rel="tag"># LSTM</a>
+              <a href="/tags/RNN/" rel="tag"># RNN</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/07/07/nlp-attention/" rel="prev" title="nlp_attention">
+      <i class="fa fa-chevron-left"></i> nlp_attention
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2020/07/15/%E7%90%86%E8%A7%A3TF-IDF/" rel="next" title="理解TF-IDF">
+      理解TF-IDF <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%80%E4%B9%88%E6%98%AFRNN"><span class="nav-number">1.</span> <span class="nav-text">什么是RNN</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88RNN%E6%9C%89%E6%A2%AF%E5%BA%A6%E6%B6%88%E5%A4%B1%E5%92%8C%E6%A2%AF%E5%BA%A6%E7%88%86%E7%82%B8%E7%9A%84%E9%97%AE%E9%A2%98"><span class="nav-number">2.</span> <span class="nav-text">为什么RNN有梯度消失和梯度爆炸的问题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A6%82%E4%BD%95%E8%A7%A3%E5%86%B3RNN%E7%9A%84%E6%A2%AF%E5%BA%A6%E6%B6%88%E5%A4%B1%E9%97%AE%E9%A2%98-%E4%B8%80%E9%83%A8%E5%88%86"><span class="nav-number">3.</span> <span class="nav-text">如何解决RNN的梯度消失问题(一部分)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%80%E4%B9%88%E6%98%AFLSTM"><span class="nav-number">4.</span> <span class="nav-text">什么是LSTM</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88LSTM%E8%83%BD%E5%A4%9F%E8%A7%A3%E5%86%B3%E6%A2%AF%E5%BA%A6%E6%B6%88%E5%A4%B1%E5%92%8C%E7%88%86%E7%82%B8%E7%9A%84%E9%97%AE%E9%A2%98-%E5%87%86%E7%A1%AE%E6%9D%A5%E8%AF%B4%E6%98%AF%E5%87%8F%E7%BC%93"><span class="nav-number">5.</span> <span class="nav-text">为什么LSTM能够解决梯度消失和爆炸的问题(准确来说是减缓)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Dropout%E6%8A%91%E5%88%B6%E8%BF%87%E6%8B%9F%E5%90%88"><span class="nav-number">6.</span> <span class="nav-text">Dropout抑制过拟合</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Mongooses</p>
+  <div class="site-description" itemprop="description">recording something</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">15</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">58</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Mongooses</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

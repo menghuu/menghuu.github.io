@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"yoursite.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="对于情况分析，主要参考：  参考1 参考2 排列组合">
+<meta property="og:type" content="article">
+<meta property="og:title" content="N个球放入M个盒子中的情况分析">
+<meta property="og:url" content="http://yoursite.com/2019/04/15/N%E4%B8%AA%E7%90%83%E6%94%BE%E5%85%A5M%E4%B8%AA%E7%9B%92%E5%AD%90%E4%B8%AD%E7%9A%84%E6%83%85%E5%86%B5%E5%88%86%E6%9E%90/index.html">
+<meta property="og:site_name" content="Mongoose&#39;s blog">
+<meta property="og:description" content="对于情况分析，主要参考：  参考1 参考2 排列组合">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2019-04-14T16:00:00.000Z">
+<meta property="article:modified_time" content="2019-04-14T16:00:00.000Z">
+<meta property="article:author" content="Mongooses">
+<meta property="article:tag" content="算法">
+<meta property="article:tag" content="数据结构">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://yoursite.com/2019/04/15/N%E4%B8%AA%E7%90%83%E6%94%BE%E5%85%A5M%E4%B8%AA%E7%9B%92%E5%AD%90%E4%B8%AD%E7%9A%84%E6%83%85%E5%86%B5%E5%88%86%E6%9E%90/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>N个球放入M个盒子中的情况分析 | Mongoose's blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Mongoose's blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/04/15/N%E4%B8%AA%E7%90%83%E6%94%BE%E5%85%A5M%E4%B8%AA%E7%9B%92%E5%AD%90%E4%B8%AD%E7%9A%84%E6%83%85%E5%86%B5%E5%88%86%E6%9E%90/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Mongooses">
+      <meta itemprop="description" content="recording something">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Mongoose's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          N个球放入M个盒子中的情况分析
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-04-15 00:00:00" itemprop="dateCreated datePublished" datetime="2019-04-15T00:00:00+08:00">2019-04-15</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>对于情况分析，主要参考：</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/u011244839/article/details/53443505">参考1</a></li>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/Jaster_wisdom/article/details/78506831">参考2</a></li>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/l_0000/article/details/82560166">排列组合</a></li>
+</ul>
+<span id="more"></span>
+<p>本文只是对参考链接的简单“复制”，最多会有比较详细的解释，不会有什么新的东西</p>
+<blockquote>
+<p> 该类问题涉及到三个因素，分别是球是否有区别、盒子是否有区别、盒子是否可以为空。所以大概可以将该问题分为以下八种情况：</p>
+<p>1.将n个无区别的球放入m个无标志的盒中，没有一个盒子为空，有多少种情况？<br>2.将n个无区别的球放入m个无标志的盒中，盒内数目不限制，有多少种情况？  </p>
+<p>3.将n个无区别的球放入m个有标志的盒中，没有一个盒子为空，有多少种情况？<br>4.将n个无区别的球放入m个有标志的盒中，盒内数目无限制，有多少种情况？  </p>
+<p>5.将n个有区别的球放入m个无标志的盒中，没有一个盒子为空，有多少种情况？<br>6.将n个有区别的球放入m个无标志的盒中，盒内数目不限制，有多少种情况？  </p>
+<p>7.将n个有区别的球放入m个有标志的盒中，没有一个盒子为空，有多少种情况？<br>8.将n个有区别的球放入m个有标志的盒中，盒内数目不限制，有多少种情况？  </p>
+</blockquote>
+<h2 id="将n个无区别的球放入m个无标志的盒中，没有一个盒子为空，有多少种情况？"><a href="#将n个无区别的球放入m个无标志的盒中，没有一个盒子为空，有多少种情况？" class="headerlink" title="将n个无区别的球放入m个无标志的盒中，没有一个盒子为空，有多少种情况？"></a>将n个无区别的球放入m个无标志的盒中，没有一个盒子为空，有多少种情况？</h2><h3 id="解释"><a href="#解释" class="headerlink" title="解释"></a>解释</h3><p>这里肯定要假设球的个数n要大于盒子的个数m，否则的话，必然有盒子是空的。</p>
+<p>记录此时的情况个数为$P_{m}(n)$。由于此时任何一个盒子都不能是空的，所以必然有m个球放在了这m个盒子中，并且由于是无区别/无标志，所以这只有一种情况，也就是说$P_m(m)==1$。剩下的球怎么分等下再说，这个前提得有。</p>
+<p>这里给出结论：</p>
+<p>$P<em>m(n) = P_1(n-m) + P_2(n-m) + … + P</em>{n-m}(n-m)$</p>
+<p>这里给出第一项的解释：在这m个盒子中任何<code>1</code>个盒子中要装上这<code>n-m</code>个球。</p>
+<p>除了$P<em>m(m)==1$之外还有$P</em>{m-1}(m)==1$和$P_1(1)==1$，具体不在解释。</p>
+<h3 id="代码实现"><a href="#代码实现" class="headerlink" title="代码实现"></a>代码实现</h3><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * @brief 计算n个无区别的球放入m个无区别的盒子中有几种方法(不允许有空盒子)</span></span><br><span class="line"><span class="comment"> * </span></span><br><span class="line"><span class="comment"> * @param m M个盒子</span></span><br><span class="line"><span class="comment"> * @param n N个球</span></span><br><span class="line"><span class="comment"> * @return int 次数</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">p</span><span class="params">(<span class="keyword">int</span> m, <span class="keyword">int</span> n)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (m &gt; n)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (m == <span class="number">1</span> || m == n || m == n - <span class="number">1</span>)</span><br><span class="line"></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">int</span> count = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt;= n - m; i++)</span><br><span class="line">    &#123;</span><br><span class="line">        count += <span class="built_in">p</span>(i, n - m);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> count;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> N, M;</span><br><span class="line"></span><br><span class="line">    std::cout &lt;&lt; <span class="string">&quot;input the number of boxes(M): &quot;</span>;</span><br><span class="line">    std::cin &gt;&gt; M;</span><br><span class="line">    std::cout &lt;&lt; <span class="string">&quot;input the number of balls(N): &quot;</span>;</span><br><span class="line">    std::cin &gt;&gt; N;</span><br><span class="line">    std::cout &lt;&lt; <span class="string">&quot;count is: &quot;</span> &lt;&lt; <span class="built_in">p</span>(M, N) &lt;&lt; std::endl;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="将n个无区别的球放入m个无标志的盒中，盒内数目不限制，有多少种情况？"><a href="#将n个无区别的球放入m个无标志的盒中，盒内数目不限制，有多少种情况？" class="headerlink" title="将n个无区别的球放入m个无标志的盒中，盒内数目不限制，有多少种情况？"></a>将n个无区别的球放入m个无标志的盒中，盒内数目不限制，有多少种情况？</h2><h3 id="解释-1"><a href="#解释-1" class="headerlink" title="解释"></a>解释</h3><p>貌似不是特别好想，直接给出结论，$P_{m}(n+m)$</p>
+<h3 id="代码实现，略"><a href="#代码实现，略" class="headerlink" title="代码实现，略"></a>代码实现，略</h3><h2 id="将n个无区别的球放入m个有标志的盒中，没有一个盒子为空，有多少种情况？"><a href="#将n个无区别的球放入m个有标志的盒中，没有一个盒子为空，有多少种情况？" class="headerlink" title="将n个无区别的球放入m个有标志的盒中，没有一个盒子为空，有多少种情况？"></a>将n个无区别的球放入m个有标志的盒中，没有一个盒子为空，有多少种情况？</h2><p>$C_{n-1}^{m-1}$</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 主要是如何计算排列组合</span></span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * @brief 计算</span></span><br><span class="line"><span class="comment"> * </span></span><br><span class="line"><span class="comment"> * @param m </span></span><br><span class="line"><span class="comment"> * @param n </span></span><br><span class="line"><span class="comment"> * @return int </span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">n_arragement</span><span class="params">(<span class="keyword">int</span> n, <span class="keyword">int</span> start_n, <span class="keyword">int</span> start_arragement)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="comment">// 不进行某些判断了</span></span><br><span class="line">    <span class="keyword">int</span> result = start_n &gt; <span class="number">1</span> ? start_arragement : <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">int</span> start_i = start_n &gt; <span class="number">1</span> ? start_n + <span class="number">1</span> : <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">for</span> (; start_i &lt;= n; start_i++)</span><br><span class="line">    &#123;</span><br><span class="line">        result *= start_i;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> result;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * @brief 计算n个无区别的球放入m个有区别的盒子中有几种方法(不允许有空盒子)</span></span><br><span class="line"><span class="comment"> * </span></span><br><span class="line"><span class="comment"> * @param m M个盒子</span></span><br><span class="line"><span class="comment"> * @param n N个球</span></span><br><span class="line"><span class="comment"> * @return int 次数</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">p</span><span class="params">(<span class="keyword">int</span> m, <span class="keyword">int</span> n)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">        <span class="comment">// 不进行某些判断了</span></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * $C_&#123;n-1&#125;^&#123;m-1&#125; = \frac&#123;(n-1)!&#125;&#123;(n-m)! * (m-1)!&#125;$</span></span><br><span class="line"><span class="comment">     * </span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">int</span> part1, part2, part3 = <span class="number">1</span>; <span class="comment">// (n-1)!  larger smaller</span></span><br><span class="line">    <span class="keyword">if</span>(n-m &lt; m<span class="number">-1</span>)&#123;</span><br><span class="line">        part3 = <span class="built_in">n_arragement</span>(n-m, <span class="number">1</span>, <span class="number">1</span>);</span><br><span class="line">        part2 = <span class="built_in">n_arragement</span>(m<span class="number">-1</span>, n-m, part3);</span><br><span class="line">        part1 = <span class="built_in">n_arragement</span>(n<span class="number">-1</span>, m<span class="number">-1</span>, part2);</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        part3 = <span class="built_in">n_arragement</span>(m<span class="number">-1</span>, <span class="number">1</span>, <span class="number">1</span>);</span><br><span class="line">        part2 = <span class="built_in">n_arragement</span>(n-m, m<span class="number">-1</span>, part3);</span><br><span class="line">        part1 = <span class="built_in">n_arragement</span>(n<span class="number">-1</span>, n-m, part2);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> part1 / (part2 * part3);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> N, M;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// std::cout &lt;&lt; n_permutation(5, 3, 6) &lt;&lt; std::endl;</span></span><br><span class="line"></span><br><span class="line">    std::cout &lt;&lt; <span class="string">&quot;input the number of boxes(M): &quot;</span>;</span><br><span class="line">    std::cin &gt;&gt; M;</span><br><span class="line">    std::cout &lt;&lt; <span class="string">&quot;input the number of balls(N): &quot;</span>;</span><br><span class="line">    std::cin &gt;&gt; N;</span><br><span class="line">    std::cout &lt;&lt; <span class="string">&quot;count is: &quot;</span> &lt;&lt; <span class="built_in">p</span>(M, N) &lt;&lt; std::endl;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="将n个无区别的球放入m个有标志的盒中，盒内数目无限制，有多少种情况？"><a href="#将n个无区别的球放入m个有标志的盒中，盒内数目无限制，有多少种情况？" class="headerlink" title="将n个无区别的球放入m个有标志的盒中，盒内数目无限制，有多少种情况？"></a>将n个无区别的球放入m个有标志的盒中，盒内数目无限制，有多少种情况？</h2><p>$C_{m+n-1}^{m-1}$</p>
+<h2 id="将n个有区别的球放入m个无标志的盒中，没有一个盒子为空，有多少种情况？"><a href="#将n个有区别的球放入m个无标志的盒中，没有一个盒子为空，有多少种情况？" class="headerlink" title="将n个有区别的球放入m个无标志的盒中，没有一个盒子为空，有多少种情况？"></a>将n个有区别的球放入m个无标志的盒中，没有一个盒子为空，有多少种情况？</h2><p>略， $S(N, M)$ –第二类斯特林数</p>
+<h2 id="将n个有区别的球放入m个无标志的盒中，盒内数目不限制，有多少种情况？"><a href="#将n个有区别的球放入m个无标志的盒中，盒内数目不限制，有多少种情况？" class="headerlink" title="将n个有区别的球放入m个无标志的盒中，盒内数目不限制，有多少种情况？"></a>将n个有区别的球放入m个无标志的盒中，盒内数目不限制，有多少种情况？</h2><p>略，$S(N, 1) + S(N, 2) + S(N, 3) + … + S(N, M)$</p>
+<h2 id="将n个有区别的球放入m个有标志的盒中，没有一个盒子为空，有多少种情况？"><a href="#将n个有区别的球放入m个有标志的盒中，没有一个盒子为空，有多少种情况？" class="headerlink" title="将n个有区别的球放入m个有标志的盒中，没有一个盒子为空，有多少种情况？"></a>将n个有区别的球放入m个有标志的盒中，没有一个盒子为空，有多少种情况？</h2><p>略，$M! * S(N, M)$</p>
+<h2 id="将n个有区别的球放入m个有标志的盒中，盒内数目不限制，有多少种情况？"><a href="#将n个有区别的球放入m个有标志的盒中，盒内数目不限制，有多少种情况？" class="headerlink" title="将n个有区别的球放入m个有标志的盒中，盒内数目不限制，有多少种情况？"></a>将n个有区别的球放入m个有标志的盒中，盒内数目不限制，有多少种情况？</h2><p>$m^n$</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E7%AE%97%E6%B3%95/" rel="tag"># 算法</a>
+              <a href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" rel="tag"># 数据结构</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2019/04/11/conda_tutorial/" rel="prev" title="conda/anaconda安利+速记手册 或者 使用 pipenv+pyenv">
+      <i class="fa fa-chevron-left"></i> conda/anaconda安利+速记手册 或者 使用 pipenv+pyenv
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2019/07/29/conda%20+%20pipenv/" rel="next" title="conda + pipenv 配置深度学习开发环境">
+      conda + pipenv 配置深度学习开发环境 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B0%86n%E4%B8%AA%E6%97%A0%E5%8C%BA%E5%88%AB%E7%9A%84%E7%90%83%E6%94%BE%E5%85%A5m%E4%B8%AA%E6%97%A0%E6%A0%87%E5%BF%97%E7%9A%84%E7%9B%92%E4%B8%AD%EF%BC%8C%E6%B2%A1%E6%9C%89%E4%B8%80%E4%B8%AA%E7%9B%92%E5%AD%90%E4%B8%BA%E7%A9%BA%EF%BC%8C%E6%9C%89%E5%A4%9A%E5%B0%91%E7%A7%8D%E6%83%85%E5%86%B5%EF%BC%9F"><span class="nav-number">1.</span> <span class="nav-text">将n个无区别的球放入m个无标志的盒中，没有一个盒子为空，有多少种情况？</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%A7%A3%E9%87%8A"><span class="nav-number">1.1.</span> <span class="nav-text">解释</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%A3%E7%A0%81%E5%AE%9E%E7%8E%B0"><span class="nav-number">1.2.</span> <span class="nav-text">代码实现</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B0%86n%E4%B8%AA%E6%97%A0%E5%8C%BA%E5%88%AB%E7%9A%84%E7%90%83%E6%94%BE%E5%85%A5m%E4%B8%AA%E6%97%A0%E6%A0%87%E5%BF%97%E7%9A%84%E7%9B%92%E4%B8%AD%EF%BC%8C%E7%9B%92%E5%86%85%E6%95%B0%E7%9B%AE%E4%B8%8D%E9%99%90%E5%88%B6%EF%BC%8C%E6%9C%89%E5%A4%9A%E5%B0%91%E7%A7%8D%E6%83%85%E5%86%B5%EF%BC%9F"><span class="nav-number">2.</span> <span class="nav-text">将n个无区别的球放入m个无标志的盒中，盒内数目不限制，有多少种情况？</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%A7%A3%E9%87%8A-1"><span class="nav-number">2.1.</span> <span class="nav-text">解释</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%A3%E7%A0%81%E5%AE%9E%E7%8E%B0%EF%BC%8C%E7%95%A5"><span class="nav-number">2.2.</span> <span class="nav-text">代码实现，略</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B0%86n%E4%B8%AA%E6%97%A0%E5%8C%BA%E5%88%AB%E7%9A%84%E7%90%83%E6%94%BE%E5%85%A5m%E4%B8%AA%E6%9C%89%E6%A0%87%E5%BF%97%E7%9A%84%E7%9B%92%E4%B8%AD%EF%BC%8C%E6%B2%A1%E6%9C%89%E4%B8%80%E4%B8%AA%E7%9B%92%E5%AD%90%E4%B8%BA%E7%A9%BA%EF%BC%8C%E6%9C%89%E5%A4%9A%E5%B0%91%E7%A7%8D%E6%83%85%E5%86%B5%EF%BC%9F"><span class="nav-number">3.</span> <span class="nav-text">将n个无区别的球放入m个有标志的盒中，没有一个盒子为空，有多少种情况？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B0%86n%E4%B8%AA%E6%97%A0%E5%8C%BA%E5%88%AB%E7%9A%84%E7%90%83%E6%94%BE%E5%85%A5m%E4%B8%AA%E6%9C%89%E6%A0%87%E5%BF%97%E7%9A%84%E7%9B%92%E4%B8%AD%EF%BC%8C%E7%9B%92%E5%86%85%E6%95%B0%E7%9B%AE%E6%97%A0%E9%99%90%E5%88%B6%EF%BC%8C%E6%9C%89%E5%A4%9A%E5%B0%91%E7%A7%8D%E6%83%85%E5%86%B5%EF%BC%9F"><span class="nav-number">4.</span> <span class="nav-text">将n个无区别的球放入m个有标志的盒中，盒内数目无限制，有多少种情况？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B0%86n%E4%B8%AA%E6%9C%89%E5%8C%BA%E5%88%AB%E7%9A%84%E7%90%83%E6%94%BE%E5%85%A5m%E4%B8%AA%E6%97%A0%E6%A0%87%E5%BF%97%E7%9A%84%E7%9B%92%E4%B8%AD%EF%BC%8C%E6%B2%A1%E6%9C%89%E4%B8%80%E4%B8%AA%E7%9B%92%E5%AD%90%E4%B8%BA%E7%A9%BA%EF%BC%8C%E6%9C%89%E5%A4%9A%E5%B0%91%E7%A7%8D%E6%83%85%E5%86%B5%EF%BC%9F"><span class="nav-number">5.</span> <span class="nav-text">将n个有区别的球放入m个无标志的盒中，没有一个盒子为空，有多少种情况？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B0%86n%E4%B8%AA%E6%9C%89%E5%8C%BA%E5%88%AB%E7%9A%84%E7%90%83%E6%94%BE%E5%85%A5m%E4%B8%AA%E6%97%A0%E6%A0%87%E5%BF%97%E7%9A%84%E7%9B%92%E4%B8%AD%EF%BC%8C%E7%9B%92%E5%86%85%E6%95%B0%E7%9B%AE%E4%B8%8D%E9%99%90%E5%88%B6%EF%BC%8C%E6%9C%89%E5%A4%9A%E5%B0%91%E7%A7%8D%E6%83%85%E5%86%B5%EF%BC%9F"><span class="nav-number">6.</span> <span class="nav-text">将n个有区别的球放入m个无标志的盒中，盒内数目不限制，有多少种情况？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B0%86n%E4%B8%AA%E6%9C%89%E5%8C%BA%E5%88%AB%E7%9A%84%E7%90%83%E6%94%BE%E5%85%A5m%E4%B8%AA%E6%9C%89%E6%A0%87%E5%BF%97%E7%9A%84%E7%9B%92%E4%B8%AD%EF%BC%8C%E6%B2%A1%E6%9C%89%E4%B8%80%E4%B8%AA%E7%9B%92%E5%AD%90%E4%B8%BA%E7%A9%BA%EF%BC%8C%E6%9C%89%E5%A4%9A%E5%B0%91%E7%A7%8D%E6%83%85%E5%86%B5%EF%BC%9F"><span class="nav-number">7.</span> <span class="nav-text">将n个有区别的球放入m个有标志的盒中，没有一个盒子为空，有多少种情况？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B0%86n%E4%B8%AA%E6%9C%89%E5%8C%BA%E5%88%AB%E7%9A%84%E7%90%83%E6%94%BE%E5%85%A5m%E4%B8%AA%E6%9C%89%E6%A0%87%E5%BF%97%E7%9A%84%E7%9B%92%E4%B8%AD%EF%BC%8C%E7%9B%92%E5%86%85%E6%95%B0%E7%9B%AE%E4%B8%8D%E9%99%90%E5%88%B6%EF%BC%8C%E6%9C%89%E5%A4%9A%E5%B0%91%E7%A7%8D%E6%83%85%E5%86%B5%EF%BC%9F"><span class="nav-number">8.</span> <span class="nav-text">将n个有区别的球放入m个有标志的盒中，盒内数目不限制，有多少种情况？</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Mongooses</p>
+  <div class="site-description" itemprop="description">recording something</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">15</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">58</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Mongooses</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

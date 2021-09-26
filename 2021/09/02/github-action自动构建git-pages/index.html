@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"yoursite.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="github action自动构建git pages 我之前是使用travis的，但是不知为何现在travis-ci好久不能成功了，我现在连无法登录管理我之前的自动化部署我的博客了，所以，采用了github自带的action这个ci工具来自动将我hexo分支的md文件生成静态文件，并push到master分支中，由此来部署我的博客。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="github action自动构建git pages">
+<meta property="og:url" content="http://yoursite.com/2021/09/02/github-action%E8%87%AA%E5%8A%A8%E6%9E%84%E5%BB%BAgit-pages/index.html">
+<meta property="og:site_name" content="Mongoose&#39;s blog">
+<meta property="og:description" content="github action自动构建git pages 我之前是使用travis的，但是不知为何现在travis-ci好久不能成功了，我现在连无法登录管理我之前的自动化部署我的博客了，所以，采用了github自带的action这个ci工具来自动将我hexo分支的md文件生成静态文件，并push到master分支中，由此来部署我的博客。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2021-09-02T14:46:38.000Z">
+<meta property="article:modified_time" content="2021-09-02T14:46:38.000Z">
+<meta property="article:author" content="Mongooses">
+<meta property="article:tag" content="github">
+<meta property="article:tag" content="page">
+<meta property="article:tag" content="action">
+<meta property="article:tag" content="blog">
+<meta property="article:tag" content="ci">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://yoursite.com/2021/09/02/github-action%E8%87%AA%E5%8A%A8%E6%9E%84%E5%BB%BAgit-pages/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>github action自动构建git pages | Mongoose's blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Mongoose's blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2021/09/02/github-action%E8%87%AA%E5%8A%A8%E6%9E%84%E5%BB%BAgit-pages/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Mongooses">
+      <meta itemprop="description" content="recording something">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Mongoose's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          github action自动构建git pages
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2021-09-02 22:46:38" itemprop="dateCreated datePublished" datetime="2021-09-02T22:46:38+08:00">2021-09-02</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>github action自动构建git pages</p>
+<p>我之前是使用travis的，但是不知为何现在travis-ci好久不能成功了，我现在连无法登录管理我之前的自动化部署我的博客了，所以，采用了github自带的action这个ci工具来自动将我hexo分支的md文件生成静态文件，并push到master分支中，由此来部署我的博客。</p>
+<hr>
+<span id="more"></span>
+<p>具体的yml文件，可以见<a target="_blank" rel="noopener" href="https://github.com/menghuu/menghuu.github.io/blob/hexo/.github/workflows/deploy.yml">https://github.com/menghuu/menghuu.github.io/blob/hexo/.github/workflows/deploy.yml</a></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br></pre></td><td class="code"><pre><span class="line">name: Deploy CI</span><br><span class="line"></span><br><span class="line">on:</span><br><span class="line">  push:</span><br><span class="line">    branches: [ hexo ]</span><br><span class="line">  pull_request:</span><br><span class="line">    branches: [ hexo ]</span><br><span class="line"></span><br><span class="line">jobs:</span><br><span class="line">  build:</span><br><span class="line"></span><br><span class="line">    runs-on: ubuntu-latest</span><br><span class="line">    env:</span><br><span class="line">      TZ: &#x27;Asia/Shanghai&#x27;</span><br><span class="line">      GH_REF: github.com/menghuu/menghuu.github.io.git  #设置GH_REF</span><br><span class="line">      NODE_VERSION: 14</span><br><span class="line">    steps:</span><br><span class="line">    - uses: actions/checkout@v2</span><br><span class="line">    - name: setup Node.js</span><br><span class="line">      uses: actions/setup-node@v2</span><br><span class="line">      with:</span><br><span class="line">        cache: &#x27;npm&#x27;</span><br><span class="line">        </span><br><span class="line">    - name: Cache node modules</span><br><span class="line">      uses: actions/cache@v2</span><br><span class="line">      with:</span><br><span class="line">        path: ./node_modules</span><br><span class="line">        key: $&#123;&#123; runner.os &#125;&#125;-build-$&#123;&#123; env.cache-name &#125;&#125;-$&#123;&#123; hashFiles(&#x27;**/package-lock.json&#x27;) &#125;&#125;</span><br><span class="line">        restore-keys: |</span><br><span class="line">          $&#123;&#123; runner.os &#125;&#125;-build-$&#123;&#123; env.cache-name &#125;&#125;-</span><br><span class="line">          $&#123;&#123; runner.os &#125;&#125;-build-</span><br><span class="line">          $&#123;&#123; runner.os &#125;&#125;-</span><br><span class="line">          </span><br><span class="line">    - name: install packages</span><br><span class="line">      run: |</span><br><span class="line">        npm install -g hexo</span><br><span class="line">        npm install</span><br><span class="line">    - name: generate static pages</span><br><span class="line">      run: |</span><br><span class="line">        hexo cl</span><br><span class="line">        hexo g</span><br><span class="line">    - name: git commit page</span><br><span class="line">      run: |</span><br><span class="line">        cd ./public</span><br><span class="line">        git init</span><br><span class="line">        git config user.name &quot;meng.hu&quot;</span><br><span class="line">        git config user.email &quot;mail@meng.hu&quot;</span><br><span class="line">        git add .</span><br><span class="line">        git commit -m &quot;Site deployed by Github Action&quot;</span><br><span class="line">        git push --force --quiet &quot;https://menghuu:$&#123;&#123; secrets.GITHUB_TOKEN  &#125;&#125;@$&#123;&#123; env.GH_REF &#125;&#125;&quot; master:master</span><br></pre></td></tr></table></figure>
+<p>其实没有什么太困难的，只是有些文章会让你创建person access key使得你的ci工具可以push文件，或者有的会设置一个单独的ssh key，目的也是为了让你的ci工具能够push。其实github本身为action创建了一个access token，那就是<code>GITHUB_TOKEN</code>。<a target="_blank" rel="noopener" href="https://docs.github.com/cn/actions/reference/authentication-in-a-workflow">工作流程中的身份验证 - GitHub Docs</a></p>
+<p>所以在这个里面，你不需要设置任何别的东西，只需要注意一下你文章的MD文件所在的分支（在我的例子里面是hexo），以及最终会将生成的静态html去push到哪个分支中（在我的例子中，是master）。</p>
+<p>除此之外，还是用了cache这个action，用于缓存nodejs的安装的packages。这个对于最终的CI跑完的速度还是有影响的，能省个十秒钟吧。</p>
+<p>最后别忘了领个徽章哦。<a target="_blank" rel="noopener" href="https://docs.github.com/cn/actions/managing-workflow-runs/adding-a-workflow-status-badge">添加工作流程状态徽章 - GitHub Docs</a></p>
+<p>又水了一篇</p>
+<hr>
+<p>参考链接(有关于cache的)</p>
+<ul>
+<li><p><a target="_blank" rel="noopener" href="https://www.voorhoede.nl/en/blog/super-fast-npm-install-on-github-actions/">Super fast npm install on Github Actions (voorhoede.nl)</a></p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://docs.github.com/cn/actions/guides/caching-dependencies-to-speed-up-workflows">缓存依赖项以加快工作流程 - GitHub Docs</a></p>
+</li>
+<li><a target="_blank" rel="noopener" href="https://github.com/actions/cache/">actions/cache: Cache dependencies and build outputs in GitHub Actions</a></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/github/" rel="tag"># github</a>
+              <a href="/tags/page/" rel="tag"># page</a>
+              <a href="/tags/action/" rel="tag"># action</a>
+              <a href="/tags/blog/" rel="tag"># blog</a>
+              <a href="/tags/ci/" rel="tag"># ci</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2021/09/02/how-to-manage-your-ssh-private-keys/" rel="prev" title="how-to-manage-your-ssh-private-keys">
+      <i class="fa fa-chevron-left"></i> how-to-manage-your-ssh-private-keys
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Mongooses</p>
+  <div class="site-description" itemprop="description">recording something</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">15</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">58</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Mongooses</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

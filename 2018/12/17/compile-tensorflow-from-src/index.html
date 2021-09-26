@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"yoursite.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="本文编译不考虑独立显卡部分的相关库的安装 基于ubuntu18.04，使用的是gcc5 基于anaconda的python3(具体采用的是python3.5) 如果不是由特殊的要求，强烈建议使用tensorflow官方的二进制包，比如pip 实际上如果只是想将tensorflow中的模型和参数应用到实际受限的环境，需要编译成lib文件，或许有更好的方式，而不是使用这个方法。 写的是整个步骤，所以">
+<meta property="og:type" content="article">
+<meta property="og:title" content="从源码编译tensorflow">
+<meta property="og:url" content="http://yoursite.com/2018/12/17/compile-tensorflow-from-src/index.html">
+<meta property="og:site_name" content="Mongoose&#39;s blog">
+<meta property="og:description" content="本文编译不考虑独立显卡部分的相关库的安装 基于ubuntu18.04，使用的是gcc5 基于anaconda的python3(具体采用的是python3.5) 如果不是由特殊的要求，强烈建议使用tensorflow官方的二进制包，比如pip 实际上如果只是想将tensorflow中的模型和参数应用到实际受限的环境，需要编译成lib文件，或许有更好的方式，而不是使用这个方法。 写的是整个步骤，所以">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2018-12-16T21:02:56.000Z">
+<meta property="article:modified_time" content="2018-12-16T21:02:56.000Z">
+<meta property="article:author" content="Mongooses">
+<meta property="article:tag" content="linux">
+<meta property="article:tag" content="tensorflow">
+<meta property="article:tag" content="compile">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://yoursite.com/2018/12/17/compile-tensorflow-from-src/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>从源码编译tensorflow | Mongoose's blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Mongoose's blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/12/17/compile-tensorflow-from-src/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Mongooses">
+      <meta itemprop="description" content="recording something">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Mongoose's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          从源码编译tensorflow
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2018-12-17 05:02:56" itemprop="dateCreated datePublished" datetime="2018-12-17T05:02:56+08:00">2018-12-17</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <ol>
+<li>本文编译不考虑独立显卡部分的相关库的安装</li>
+<li>基于ubuntu18.04，使用的是gcc5</li>
+<li>基于anaconda的python3(具体采用的是python3.5)</li>
+<li>如果不是由特殊的要求，强烈建议使用tensorflow官方的二进制包，比如pip</li>
+<li>实际上如果只是想将tensorflow中的模型和参数应用到实际受限的环境，需要编译成lib文件，或许有更好的方式，而不是使用这个方法。</li>
+<li>写的是整个步骤，所以太啰嗦了，如果你已经安装好bazel，那么直接拉到本文最后查看具体的安装步骤吧。</li>
+</ol>
+<span id="more"></span>
+<hr>
+<p>参考资料  </p>
+<blockquote>
+<p>tensorflow的官方从源码编译tensorflow的步骤流程 <a target="_blank" rel="noopener" href="https://www.tensorflow.org/install/source">https://www.tensorflow.org/install/source</a><br>安装balze的官方资料： <a target="_blank" rel="noopener" href="https://docs.bazel.build/versions/master/install-ubuntu.html">https://docs.bazel.build/versions/master/install-ubuntu.html</a>  </p>
+</blockquote>
+<hr>
+<p>我这里首先装了bazel，我是安装在自己的家目录中的。具体的  </p>
+<blockquote>
+<p>sudo apt-get install pkg-config zip g++ zlib1g-dev unzip python<br>从 <a target="_blank" rel="noopener" href="https://github.com/bazelbuild/bazel/releases">https://github.com/bazelbuild/bazel/releases</a> 中下载适合系统的*install*.sh<br>chmod +x bazel-<version\>-installer-linux-x86_64.sh<br>./bazel-<version\>-installer-linux-x86_64.sh —user #安装bazel<br>export PATH=”$PATH:$HOME/bin”</p>
+</blockquote>
+<p>这个类似于cmake，tensorflow在linux和mac中是使用bazle进行构建，在windows中使用cmake</p>
+<hr>
+<p>根据tensorflow官方的资料，还需要安装如下的包  </p>
+<p><code>sudo apt-get install python3-numpy python3-dev python3-pip python3-wheel</code></p>
+<p>这些包的作用是</p>
+<blockquote>
+<p>numpy：这是 TensorFlow 需要的数值处理软件包。<br>dev：用于向 Python 添加扩展程序。<br>pip：用于安装和管理某些 Python 软件包。<br>wheel：用于管理 wheel (.whl) 格式的 Python 压缩包。</p>
+</blockquote>
+<p><del>但是我是在anaconda3的环境下安装的，所以这些默认都是安装好的。</del>我的anaconda中的python版本是3.7的，这个支持不是特别好，所以最终采用的是python3.5</p>
+<p>从描述上来看，这些包的作用主要是为了增加tensorflow的python api的扩展能力，没有他们(除了numpy之外)似乎对于tensorflow的cpp lib没有什么影响。</p>
+<hr>
+<p>根据官方的给的教程，我使用<code>git clone https://github.com/tensorflow/tensorflow</code>下载了源码，并使用<code>git checkout r1.13</code>来选择r1.13的tensorflow的版本,你可以根据自己的需要选择相应的版本。</p>
+<p>如果采用的是r1.0,然后根据按照官方教程中<code>./configure</code>来配置，出现<a target="_blank" rel="noopener" href="https://github.com/tensorflow/tensorflow/issues/16654">这个问题</a>，好像是因为判断bazel的版本号时候出现了bug，需要打上两个补丁。好像只要是r1.5以前的都有这个问题，我本来使用的是r1.0，结果打上这两个补丁也不能用。所以最终还是使用了1.13的版本。r1.13版本不需要打这两个补丁。</p>
+<p><code>git cherry-pick 3f57956725b553d196974c9ad31badeb3eabf8bb</code><br><code>git cherry-pick 6fcfab770c2672e2250e0f5686b9545d99eb7b2b</code></p>
+<p>实际上，这个r1.13依旧不能很好的编译成功，主要是因为我是在python3.7中编译的，在python3.7中async以及await成了关键词，但是代码中还是没有修改好。或许这个<a target="_blank" rel="noopener" href="https://github.com/tensorflow/tensorflow/pull/21202/files">commit</a>可以解决?（忘记了能不能行）</p>
+<hr>
+<p>然后就是<code>./configure</code>了,我这里没有指定cuda，如果有需要，请一定要选择。</p>
+<p>现在如果没有错误，就是说tensorflow配置好了，然后bazel build</p>
+<p><code>bazel build --config=opt //tensorflow/tools/pip_package:build_pip_package</code>  </p>
+<p>因为我是使用cpu的版本，所以，如果是使用gpu版本的，使用</p>
+<p><code>bazel build --config=opt --config=cuda //tensorflow/tools/pip_package:build_pip_package</code></p>
+<p>一段非常非常长的等待，抱歉，<strong>最终使用python3.7+tensorflow-r1.13还是没有成功。</strong></p>
+<hr>
+<p>最后使用的是py35 + keras_preprocessing成功编译成功tensorflow-r1.13。具体的步骤</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">conda create -n py35 python=3.5 pip numpy wheel  </span><br><span class="line">conda activate py35  </span><br><span class="line">pip install keras_preprocessing <span class="comment">#很重要，否则还是不能成功编译  </span></span><br><span class="line">git <span class="built_in">clone</span> https://github.com/tensorflow/tensorflow  </span><br><span class="line"><span class="built_in">cd</span> tensorflow  </span><br><span class="line">git checkout r1.13  </span><br><span class="line">./configure  </span><br><span class="line">bazel build --config=opt //tensorflow/tools/pip_package:build_pip_package  </span><br><span class="line">bazel-bin/tensorflow/tools/pip_package/build_pip_package /tmp/tensorflow_pkg</span><br><span class="line">pip install /tmp/tensorflow_pkg/tensorflow-1.12.0-cp35-cp35m-linux_x86_64.whl</span><br></pre></td></tr></table></figure>
+<p>我在服务器上使用40个逻辑核心的计算机也跑了很长时间，内存占用也十分多，所以最好能够一次就能编译好，否则，等待时间实在是太长了。</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/linux/" rel="tag"># linux</a>
+              <a href="/tags/tensorflow/" rel="tag"># tensorflow</a>
+              <a href="/tags/compile/" rel="tag"># compile</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item"></div>
+      <div class="post-nav-item">
+    <a href="/2018/12/31/manacher%E7%AE%97%E6%B3%95/" rel="next" title="manacher算法">
+      manacher算法 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Mongooses</p>
+  <div class="site-description" itemprop="description">recording something</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">15</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">58</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Mongooses</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
