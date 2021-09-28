@@ -21,8 +21,9 @@ DefaultContentLanguage = "zh"
   Description = "博客 | AI | NLP | Python"
   Keywords =  "Mongoose,独立,博客,AI,程序员,个人,思考,读书,笔记,技术,分享,Python"
   Subtitle = "一些零散的记录"
-  Imglogo = "/img/logo.png"
-  AuthorImg = "/img/author.jpg"
+  Favicon = "img/favicon.png"
+  AppleTouchIcon = "/img/author.png"
+  AuthorImg = "/img/author.png"
   DateFormat = "2006-01-02"
   YearFormat = "2006年"
   MonthFormat = "01-02"
@@ -31,11 +32,9 @@ DefaultContentLanguage = "zh"
   RevolverMapId = "5weqy8jl5ga"
   Fancybox = true
 
+
 [Author]
   Name = "m"
-
-[Params.Share]
-  Baidu = true
 
 [Params.utterances]  # https://utteranc.es/
   owner = ""         # Your GitHub ID
